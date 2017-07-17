@@ -1,19 +1,37 @@
 document.addEventListener("DOMContentLoaded", function() {
-  var dispCandidates = document.getElementById('unordered-list');
+  var dispCandidates = document.querySelector('#candidate-list');
+  var votes = document.querySelector('button');
 
-  document.addEventListener('click',function(event) {
+  votes.addEventListener('click',function() {
     $.ajax({
       url: 'https://bb-election-api.herokuapp.com/',
       method: 'GET',
       dataType: 'json',
     }).done(function(responseData) {
-      console.log(responseData);
+      // console.log(responseData);
+      var candidate = responseData.candidates;
 
-      responseData.candidates.forEach(function(candidateInfo) {
-        var voter = document.createElement('li');
-        voter.innerHTML = 'NAME: ' + candidateInfo.name + ' VOTES: ' + candidateInfo.votes;
-        dispCandidates.append(voter);
-      });
+      for(var i = 0; i < candidate.length; i++) {
+        var listItem = document.createElement('li');
+        listItem.innerHTML = candidate[i].name + ' : ' + candidate[i].votes;
+        dispCandidates.append(listItem);
+
+        var voteForm = document.createElement('form');
+        voteForm.setAttribute('method','POST');
+        voteForm.setAttribute('action','https://bb-election-api.herokuapp.com/vote');
+        listItem.append(voteForm);
+
+        var hiddenField = document.createElement('input');
+        hiddenField.setAttribute('type','hidden');
+        hiddenField.setAttribute('name','id');
+        hiddenField.setAttribute('value', candidate[i].id);
+        voteForm.append(hiddenField);
+
+        var submit = document.createElement('input');
+        submit.setAttribute('type','submit');
+        submit.innerHTML = 'vote';
+        voteForm.append(submit);
+      }
     });
   });
 });
