@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", function() {
   var dispCandidates = document.querySelector('#candidate-list');
-  var votes = document.querySelector('button');
+  var votes = document.querySelector('#votes');
+  var refresh = document.querySelector('#refresh');
 
   votes.addEventListener('click',function() {
     $.ajax({
@@ -27,9 +28,10 @@ document.addEventListener("DOMContentLoaded", function() {
         hiddenField.setAttribute('value', candidate[i].id);
         voteForm.append(hiddenField);
 
-        var submit = document.createElement('input');
+        var submit = document.createElement('button');
         submit.setAttribute('type','submit');
         submit.setAttribute('class','submit');
+        submit.innerHTML = "Vote";
         voteForm.append(submit);
 
         document.querySelectorAll('form')[i].addEventListener('submit',function(e){
@@ -49,4 +51,9 @@ document.addEventListener("DOMContentLoaded", function() {
       }
     });
   });
+
+  $('#refresh').click(function() {
+    location.reload();
+  });
+
 });
